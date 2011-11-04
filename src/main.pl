@@ -30,11 +30,27 @@ initialBoard(
 ).
 
 %list handlers
-getpos(X,Y,V,B):-getrow(Y,L,B),!,getrow(X,V,L).
+getpos(X,Y,V,B):-X1 is X+1,(X1>=0->(Y>=0->getrow(Y,L,B),!,getrow(X1,V,L);false);false). %x+1 por causa da label
 getrow(Y,L,B):-getrow(Y,L,0,B).
 getrow(Y,L,A,[H|T]):-(A==Y->L=H;N is A+1,getrow(Y,L,N,T)).
 
 
+selrow(Y,B,H1,T1,L):-selrow(Y,0,B,H1,T1,[],L).
+selrow(Y,A,[H|T],H1,T1,Acc,L):-(A==Y->T1=T,H1=Acc,L=H;N is A+1,append(Acc,[H],Q),selrow(Y,N,T,H1,T1,Q,L)).
+
+
+setpos(X,Y,V,B,G):-X1 is X+1,(X1>=0->(Y>=0->selrow(Y,B,H1,T1,L),setpos(X1,L,V,NL),append(H1,[NL],W),append(W,T1,G);false);false).
+setpos(Y,B,V,G):-setpos(Y,0,V,B,[],G).
+setpos(Y,A,V,[H|T],Acc,G):-(A==Y->append(Acc,[V],B),append(B,T,G);N is A+1,append(Acc,[H],P),setpos(Y,N,V,T,P,G)).
+
+vizinho(1,X,Y,B,Valor):-Y1 is Y-2,!, getpos(X,Y1,Valor,B).
+vizinho(2,X,Y,B,Valor):-Y1 is Y+2,!, getpos(X,Y1,Valor,B).
+vizinho(3,X,Y,B,Valor):-Y1 is Y-1,(even(X)->X1=X;X1 is X-1),!, getpos(X1,Y1,Valor,B).
+vizinho(4,X,Y,B,Valor):-Y1 is Y-1,(even(X)->X1 is X+1;X1 is X),!, getpos(X1,Y1,Valor,B).
+vizinho(5,X,Y,B,Valor):-Y1 is Y+1,(even(X)->X1=X;X1 is X-1),!, getpos(X1,Y1,Valor,B).
+vizinho(6,X,Y,B,Valor):-Y1 is Y+1,(even(X)->X1 is X+1;X1 is X),!, getpos(X1,Y1,Valor,B).
+vizinho(7,X,Y,B,Valor):-X1 is X-1,!,getpos(X1,Y,Valor,B).
+vizinho(8,X,Y,B,Valor):-X1 is X+1,!, getpos(X1,Y,Valor,B).
 %misc
 even(X):-N is X/2,(integer(N)->true;false).
 
