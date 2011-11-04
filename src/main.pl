@@ -29,6 +29,18 @@ initialBoard(
 [27,0,0,0,0,0,0,0,0,0,0,0]]
 ).
 
+%list handlers
+getpos(X,Y,V,B):-getrow(Y,L,B),!,getrow(X,V,L).
+getrow(Y,L,B):-getrow(Y,L,0,B).
+getrow(Y,L,A,[H|T]):-(A==Y->L=H;N is A+1,getrow(Y,L,N,T)).
+
+
+%misc
+even(X):-N is X/2,(integer(N)->true;false).
+
+%cordoscamelos
+
+mesmacor(X,Y):- (X==Y->true;(even(X)->N is X+1,N==Y;N is X-1,N==Y)).
 
 %inicializador do jogador 1 joga com as pecas impares.
 initplayer(L,C,P,1):-L=[1,3,5,7,9],createnewhand(11,[],C),P=[].
