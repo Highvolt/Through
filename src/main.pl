@@ -93,9 +93,11 @@ vizinho(8,X,Y,B,Valor):-X1 is X+1,!, getpos(X1,Y,Valor,B).
 
 printboard([]).
 printboard([Head|Tail]):- rowanalise(Head),write('\n'), printboard(Tail).
-rowanalise([Head|Tail]):-N is Head/2, (integer(N) -> write(' /'); write(' \\_/')), printrow(Tail).
+rowanalise([Head|Tail]):-N is Head/2,write('   '), (integer(N) -> write(' /'); write(' \\ /')), printwhite(Tail),write('\n'),(Head<10->write(Head),write('  ');write(Head),write(' ')),(integer(N) -> write('| '); write('  | ')),printrow(Tail).
+printwhite([]).
+printwhite([_|T]):-write(' \\ /'),printwhite(T).
 printrow([]).
-printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write('\\_/'),printrow(Tail).
+printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write(' H '),printrow(Tail).
 printelem(H):-(integer(H)->(H>9->write('P');write(H));write(H)).
 
 
