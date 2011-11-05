@@ -117,26 +117,24 @@ printlist(Elem):-write(Elem).
 
 cin(X):-read(T),(integer(T)->X=T,true;cin(X)).
 askpos(X,Y):-
-write('coluna:'),
+write('\ncoluna:'),
 cin(Xt),
 write('Linha:'),
 cin(Yt),
 getTab(B),
-(jogadavalida(1,Xt,Yt,B)->X=Xt,Y=Yt,true;write('jogada invalida'),askpos(X,Y)).
+(jogadavalida(1,Xt,Yt,B)->X=Xt,Y=Yt,true;write('jogada invalida\n'),askpos(X,Y)).
 
 askLider(J,C):-
 getL(J,L),
-write('Lideres disponiveis: '),
+write('\nLideres disponiveis: '),
 printlist(L),
-write('Lider: '),!,
+write('\nLider: '),!,
 cin(X),!,
-(member(X,L)->C=X,true;write('camelo invalido'),askLider(J,C),true).
+(member(X,L)->C=X,true;write('camelo invalido\n'),askLider(J,C),true).
 
 fase1(J):-
 getL(J,L1),!,
-getTab(Tabuleiro),
-printboard(Tabuleiro),
-write('Jogador '),write(J),write(': '),!,
+write('\nJogador '),write(J),write(': '),!,
 askpos(X1,Y1),!,
 askLider(J,Lsel1),!,
 (jogar(1,Lsel1,X1,Y1,L1,L1N)->
@@ -158,7 +156,7 @@ test(X):-assert(t(1)),test2,t(X).
 gamestart:-retractall(getTab(_)),retractall(getL(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
 run :-
-fase1,!,
+(fase->fase1;false),!,
 run.
 
 
