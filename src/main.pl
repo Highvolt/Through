@@ -1,32 +1,32 @@
 initialBoard(
-[[0,0,0,0,0,0,0,0,0,0,0,0],
-[1,0,0,e,e,e,0,0,e,e,0,0],
-[2,0,0,e,e,e,e,e,e,e,e,0],
-[3,0,e,e,e,e,e,e,e,e,e,0],
-[4,0,0,e,e,e,e,e,e,e,e,0],
-[5,0,e,e,e,e,e,e,e,e,e,0],
-[6,0,e,e,e,e,e,e,e,e,e,0],
-[7,0,e,e,e,e,e,e,e,e,e,0],
-[8,0,e,e,e,e,e,e,e,e,e,0],
-[9,0,e,e,e,e,e,e,e,e,e,0],
-[10,0,e,e,e,e,e,e,e,e,e,0],
-[11,0,e,e,e,e,e,e,e,e,e,0],
-[12,0,e,e,e,e,e,e,e,e,e,0],
-[13,0,e,e,0,e,e,e,e,e,e,0],
-[14,0,e,e,e,0,e,e,e,e,e,0],
-[15,0,e,e,0,0,0,e,e,e,e,0],
-[16,0,e,e,e,0,0,e,e,e,e,0],
-[17,0,e,e,e,e,e,e,e,e,0,0],
-[18,0,e,e,e,e,e,e,e,e,e,0],
-[19,0,e,e,e,e,e,e,e,e,0,0],
-[20,0,0,e,e,e,e,e,e,e,0,0],
-[21,0,e,e,e,e,e,e,e,0,0,0],
-[22,0,0,e,e,e,e,e,e,0,0,0],
-[23,0,0,e,e,e,e,e,0,0,0,0],
-[24,0,0,0,e,e,e,e,0,0,0,0],
-[25,0,0,0,e,e,e,0,0,0,0,0],
-[26,0,0,0,0,e,e,0,0,0,0,0],
-[27,0,0,0,0,0,0,0,0,0,0,0]]
+[[0,w,w,w,w,w,w,w,w,w,w,w],
+[1,w,w,e,e,e,w,w,e,e,w,w],
+[2,w,w,e,e,e,e,e,e,e,e,w],
+[3,w,e,e,e,e,e,e,e,e,e,w],
+[4,w,w,e,e,e,e,e,e,e,e,w],
+[5,w,e,e,e,e,e,e,e,e,e,w],
+[6,w,e,e,e,e,e,e,e,e,e,w],
+[7,w,e,e,e,e,e,e,e,e,e,w],
+[8,w,e,e,e,e,e,e,e,e,e,w],
+[9,w,e,e,e,e,e,e,e,e,e,w],
+[10,w,e,e,e,e,e,e,e,e,e,w],
+[11,w,e,e,e,e,e,e,e,e,e,w],
+[12,w,e,e,e,e,e,e,e,e,e,w],
+[13,w,e,e,w,e,e,e,e,e,e,w],
+[14,w,e,e,e,w,e,e,e,e,e,w],
+[15,w,e,e,w,w,w,e,e,e,e,w],
+[16,w,e,e,e,w,w,e,e,e,e,w],
+[17,w,e,e,e,e,e,e,e,e,w,w],
+[18,w,e,e,e,e,e,e,e,e,e,w],
+[19,w,e,e,e,e,e,e,e,e,w,w],
+[20,w,w,e,e,e,e,e,e,e,w,w],
+[21,w,e,e,e,e,e,e,e,w,w,w],
+[22,w,w,e,e,e,e,e,e,w,w,w],
+[23,w,w,e,e,e,e,e,w,w,w,w],
+[24,w,w,w,e,e,e,e,w,w,w,w],
+[25,w,w,w,e,e,e,w,w,w,w,w],
+[26,w,w,w,w,e,e,w,w,w,w,w],
+[27,w,w,w,w,w,w,w,w,w,w,w]]
 ).
 
 %list handlers
@@ -88,6 +88,18 @@ fase(L1,L2):-(L1==[]->(L2==[]->false;true);true). %true -> fase de colocacao de 
 
 fim(C1,C2):-(C1==[]->(C2==[]->true;false);false). %true -> fim do jogo.
 %fase([],[]):-false. %fase 2
+
+
+%jogar
+vizinhoex(Viz,X,Y,Tab,Valor):-(vizinho(Viz,X,Y,Tab,V)->(V==Valor->true;false);true).
+vizinhosempty(X,Y,Tab):-vizinhosempty(X,Y,Tab,1).
+vizinhosempty(X,Y,Tab,Viz):-(Viz>8->true;(vizinhoex(Viz,X,Y,Tab,e)->N is Viz+1,vizinhosempty(X,Y,Tab,N);(vizinhoex(Viz,X,Y,Tab,w)->N is Viz+1,vizinhosempty(X,Y,Tab,N);false))).
+vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
+vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
+jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;false);false).
+jogar(Camelo,X,Y,ListaLideres,ListaCamelos,ListaPocos,Tabuleiro,NovoTab).
+
+
 
 %main rotine
 run :- 
