@@ -1,7 +1,42 @@
 :-dynamic getTab/1.
 
 :-dynamic getL/2.
+:-dynamic getC/2.
 
+%gerar pontos para os poços...
+getXpDefault([4,5,8,7,4,5,8,6,2,3,4,3,6,7,8]).
+getYpDefault([2,3,4,5,6,5,7,20,21,19,13,14,17,14,21]).
+getPDef([10,10,10,10,20,20,20,20,20,10,30,30,30,10,30]).
+delete2(X,L,DL):-del2(X,L,[],DL).
+
+del2(X,[X|T],A,DL):-rev_append(A,T,DL).
+del2(X,[Y|T],A,DL):-del2(X,T,[Y|A],DL).
+% append a list to a reverted list, e.g. rev_append([2,1],[3,4],[1,2,3,4])
+rev_append([],L,L).
+rev_append([H|T],L,LT):-rev_append(T,[H|L],LT).
+
+choose([], []).
+choose([],_) :- !, fail.
+choose(List, Elt) :-
+        length(List, Length),
+        random(0, Length, Index),
+        nth0(Index, List, Elt).
+        
+appender(X,Y,L):- append([X],[Y],L).
+        
+generate(X,Y,L,I,K):- I =:= 0 -> append(L,[],K), !;
+                  choose(X,Z), choose(Y,M),appender(Z,M,T), (not(member(T,L))->append([T],L,NovaL), delete2(Z,X,NovaX), delete2(M,Y,NovaY), generate(NovaX,NovaY,NovaL,I-1,K);generate(X,Y,L,I,K)).
+
+getpoints(L):-getXpDefault(X),getYpDefault(Y),getPDef(P),generatePalmPlaces(X,Y,P,[],L).
+%chamada de teste generatePalmPlaces([1,2,3,4,13,14],[5,6,7,8,9,10],[10,20,10,40],[],K).
+generatePalmPlaces(X,Y,P,L,K):- length(P,I),
+                          generate(X,Y,L,I,K),!.
+                          
+                          
+addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),choose(PL,P),appender(X,Y,Posdel),delete2(Posdel,PosPont,NPosPont),delete2(P,PL,NPL),setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G).
+addPoints([],[],T,T).
+initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
+initBoard(_).
 
 fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w],
  [1, w, w, e, 1, e, w, w, e, e, w, w],
@@ -97,7 +132,7 @@ rowanalise([Head|Tail]):-N is Head/2,write('   '), (integer(N) -> write(' /'); w
 printwhite([]).
 printwhite([_|T]):-write(' \\ /'),printwhite(T).
 printrow([]).
-printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write(' H '),printrow(Tail).
+printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write(' | '),printrow(Tail).
 printelem(H):-(integer(H)->(H>9->write('P');write(H));write(H)).
 
 
@@ -255,7 +290,7 @@ test(X):-assert(t(1)),test2,t(X).
 
 fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
-gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
+gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
 run :-
 (fase->fase1;fim->fase2;false),!,
