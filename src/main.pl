@@ -74,6 +74,8 @@ takeout(X,[X|R],R).
 takeout(X,[F|R],[F|S]) :- takeout(X,R,S).
 
 %inicializador do jogador 1 joga com as pecas impares.
+initplayer(2):-initplayer(L,C,P,2),assert(getL2(L)),assert(getC2(C)),assert(getP2(P)).
+initplayer(1):-initplayer(L,C,P,1),assert(getL1(L)),assert(getC1(C)),assert(getP1(P)).
 initplayer(L,C,P,1):-L=[1,3,5,7,9],createnewhand(11,[],C),P=[].
 %inicializador do jogador 2 joga com as pecas pares.
 initplayer(L,C,P,2):-L=[0,2,4,6,8],createnewhand(10,[],C),P=[].
@@ -99,10 +101,23 @@ vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->
 jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;false);false).
 jogar(1,Camelo,X,Y,ListaLideres,Tabuleiro,NovoTab,NovaListaLideres):-(member(Camelo,ListaLideres)->(jogadavalida(1,X,Y,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),takeout(Camelo,ListaLideres,NovaListaLideres);false);false).
 
+%I/O
+
+cin(X):-read(T),(integer(T)->X=T,true;cin(X)).
+askpos(X,Y):-write('coluna:'),cin(Xt),write('Linha:'),cin(Yt),getTab(B),(jogadavalida(1,Xt,Yt,B)->X=Xt,Y=Yt,true;write('jogada invalida'),askpos(X,Y)).
+fase1:-
+getTab(Tabuleiro),
+getL1(L1),
+getL2(L2),
+printboard(Tabuleiro),
+write('Jogador 1:'),
+askpos(X1,Y1).
+
+
 
 
 %main rotine
 run :- 
-initialBoard(A), printboard(A).
+initialBoard(A), assert(getTab(A)),getTab(B),printboard(B),initplayer(1),initplayer(2),fase1.
 
 
