@@ -97,7 +97,7 @@ vizinhosempty(X,Y,Tab,Viz):-(Viz>8->true;(vizinhoex(Viz,X,Y,Tab,e)->N is Viz+1,v
 vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
 vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
 jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;false);false).
-jogar(Camelo,X,Y,ListaLideres,ListaCamelos,ListaPocos,Tabuleiro,NovoTab).
+jogar(1,Camelo,X,Y,ListaLideres,Tabuleiro,NovoTab,NovaListaLideres):-(member(Camelo,ListaLideres)->(jogadavalida(1,X,Y,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),takeout(Camelo,ListaLideres,NovaListaLideres);false);false).
 
 
 
