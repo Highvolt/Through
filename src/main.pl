@@ -96,17 +96,31 @@ fim(C1,C2):-(C1==[]->(C2==[]->true;false);false). %true -> fim do jogo.
 
 
 %jogar
+vizinhoscolor(X,Y,Tab,Color):-vizinhoscolor(X,Y,Tab,Color,1).
+vizinhoscolor(X,Y,Tab,Cam,Viz):-(Viz>8->false;!,(vizinhoex(Viz,X,Y,Tab,Cam)->true;N is Viz+1,!,vizinhoscolor(X,Y,Tab,Cam,N))).
+
 vizinhoex(Viz,X,Y,Tab,Valor):-(vizinho(Viz,X,Y,Tab,V)->!,(V==Valor->true;!,false);true).
+
 vizinhosempty(X,Y,Tab):-vizinhosempty(X,Y,Tab,1).
 vizinhosempty(X,Y,Tab,Viz):-(Viz>8->true;!,(vizinhoex(Viz,X,Y,Tab,e)->N is Viz+1,!,vizinhosempty(X,Y,Tab,N);(vizinhoex(Viz,X,Y,Tab,w)->!,N is Viz+1,!,vizinhosempty(X,Y,Tab,N);false))).
+
 vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
 vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
-jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;write('não pode'),!,false);false).
+
+jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;!,false);false).
+jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),(vizinhoscolor(X,Y,Tabuleiro,Mcolor)->false;true);!,false);false).
 
 jogar(1,Camelo,X,Y,ListaLideres,NovaListaLideres):-
 getTab(Tabuleiro),
 (member(Camelo,ListaLideres)->(jogadavalida(1,X,Y,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),
 !,takeout(Camelo,ListaLideres,NovaListaLideres),
+retract(getTab(Tabuleiro)),
+assert(getTab(NovoTab));false);false).
+
+jogar(2,Camelo,X,Y,ListaCam,NovaCam):-
+getTab(Tabuleiro),
+(member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),
+!,takeout(Camelo,ListaCam,NovaCam),
 retract(getTab(Tabuleiro)),
 assert(getTab(NovoTab));false);false).
 
@@ -116,6 +130,7 @@ printlist([H|T]):-printlist(H),write(' '),printlist(T).
 printlist(Elem):-write(Elem).
 
 cin(X):-read(T),(integer(T)->X=T,true;cin(X)).
+
 askpos(X,Y):-
 write('\ncoluna:'),
 cin(Xt),
@@ -124,6 +139,15 @@ cin(Yt),
 getTab(B),
 (jogadavalida(1,Xt,Yt,B)->X=Xt,Y=Yt,true;write('jogada invalida\n'),askpos(X,Y)).
 
+askpos(X,Y,C):-
+write('\ncoluna:'),
+cin(Xt),
+write('Linha:'),
+cin(Yt),
+getTab(B),
+(jogadavalida(2,Xt,Yt,C,B)->X=Xt,Y=Yt,true;write('jogada invalida\n'),askpos(X,Y)).
+
+
 askLider(J,C):-
 getL(J,L),
 write('\nLideres disponiveis: '),
@@ -131,6 +155,15 @@ printlist(L),
 write('\nLider: '),!,
 cin(X),!,
 (member(X,L)->C=X,true;write('camelo invalido\n'),askLider(J,C),true).
+
+askCam(J,C):-
+getC(J,L),
+write('\nCamelos disponiveis: '),
+printlist(L),
+write('\nCamelo: '),!,
+cin(X),!,
+(member(X,L)->C=X,true;write('camelo invalido\n'),askCam(J,C),true).
+
 
 fase1(J):-
 getL(J,L1),!,
@@ -149,14 +182,33 @@ getTab(NovoTab),!,
 printboard(NovoTab),!,
 fase1(2).
 
+
+fase2(J):-
+getC(J,C1),!,
+write('\nJogador '),write(J),write(': '),!,
+askCam(J,Csel1),!,
+askpos(X1,Y1,Csel1),!,
+(jogar(2,Csel1,X1,Y1,C1,C1N)->
+retract(getL(J,C1)),
+assert(getL(J,C1N));fase2(J)).
+
+fase2:-
+getTab(Tabuleiro),!,
+printboard(Tabuleiro),!,
+fase2(1),!,
+getTab(NovoTab),!,
+printboard(NovoTab),!,
+fase2(2).
+
+
 :-dynamic t/1.
 test2:-retract(t(1)),assert(t(2)).
 test(X):-assert(t(1)),test2,t(X).
 
-gamestart:-retractall(getTab(_)),retractall(getL(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
+gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
 run :-
-(fase->fase1;false),!,
+(fase->fase1;fase2),!,
 run.
 
 
