@@ -3,8 +3,36 @@
 :-dynamic getL/2.
 
 
-fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w], [1, w, w, e, 1, e, w, w, e, e, w, w], [2, w, w, e, e, e, e, 5, e, e, e, w], [3, w, e, e, e, 3, e, e, e, e, e, w], [4, w, w, e, e, e, e, e, e, e, e, w], [5, w, e, e, e, e, 0, e, e, e, e, w], [6, w, e, e, e, e, e, e, e, e, e, w], [7, w, e, e, 2, e, e, e, e, e, e, w], [8, w, e, e, e, e, e, e, e, e, e, w], [9, w, e, e, e, e, e, e, e, 6, e, w], [10, w, e, e, e, e, e, e, e, e, e, w], [11, w, e, e, e, e, e, e, e, e, e, w], [12, w, e, e, 7, e, e, e, e, e, e, w], [13, w, e, e, w, e, e, e, e, e, e, w], [14, w, e, e, e, w, e, e, e, e, e, w], [15, w, e, e, w, w, w, e, e, e, e, w], [16, w, e, 4, e, w, w, e, e, e, e, w], [17, w, e, e, e, e, e, e, e, e, w, w], [18, w, e, e, e, e, e, e, e, e, e, w], [19, w, e, e, e, e, e, e, e, e, w, w], [20, w, w, e, e, e, e, e, e, 9, w, w], [21, w, e, e, e, e, e, 8, e, w, w, w], [22, w, w, e, e, e, e, e, e, w, w, w], [23, w, w, e, e, e, e, e, w, w, w, w], [24, w, w, w, e, e, e, e, w, w, w, w], [25, w, w, w, e, e, e, w, w, w, w, w], [26, w, w, w, w, e, e, w, w, w, w, w], [27, w, w, w, w, w, w, w, w, w, w, w]]).
-
+fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w],
+ [1, w, w, e, 1, e, w, w, e, e, w, w],
+ [2, w, w, e, e, e, e, 5, e, e, e, w],
+ [3, w, e, e, e, 3, e, e, e, e, e, w],
+ [4, w, w, e, e, e, e, e, e, e, e, w],
+ [5, w, e, e, e, e, 0, e, e, e, e, w],
+ [6, w, e, e, e, e, e, e, e, e, e, w],
+ [7, w, e, e, 2, e, e, e, e, e, e, w],
+ [8, w, e, e, e, e, e, e, e, e, e, w],
+ [9, w, e, e, e, e, e, e, e, 6, e, w],
+ [10, w, e, e, e, e, e, e, e, e, e, w],
+ [11, w, e, e, e, e, e, e, e, e, e, w],
+ [12, w, e, e, 7, e, e, e, e, e, e, w],
+ [13, w, e, e, w, e, e, e, e, e, e, w],
+ [14, w, e, e, e, w, e, e, e, e, e, w],
+ [15, w, e, e, w, w, w, e, e, e, e, w],
+ [16, w, e, 4, e, w, w, e, e, e, e, w],
+ [17, w, e, e, e, e, e, e, e, e, w, w],
+ [18, w, e, e, e, e, e, e, e, 10, e, w],
+ [19, w, e, e, e, e, e, e, e, e, w, w],
+ [20, w, w, e, e, e, e, e, e, 9, w, w],
+ [21, w, e, e, e, e, e, 8, e, w, w, w],
+ [22, w, w, e, e, e, e, e, e, w, w, w],
+ [23, w, w, e, e, e, e, e, w, w, w, w],
+ [24, w, w, w, e, e, e, e, w, w, w, w],
+ [25, w, w, w, e, e, e, w, w, w, w, w],
+ [26, w, w, w, w, e, e, w, w, w, w, w],
+ [27, w, w, w, w, w, w, w, w, w, w, w]]).
+p1c([1,3,5,7,9]).
+p2c([0,2,4,6,8]).
 
 initialBoard(
 [[0,w,w,w,w,w,w,w,w,w,w,w],
@@ -67,8 +95,8 @@ printboard([]).
 printboard([Head|Tail]):- rowanalise(Head),write('\n'), printboard(Tail).
 rowanalise([Head|Tail]):-N is Head/2, (integer(N) -> write(' /'); write(' \\_/')), printrow(Tail).
 printrow([]).
-printrow([Head|Tail]):-(Head=e->write(' ');write(Head)), write('\\_/'),printrow(Tail).
-
+printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write('\\_/'),printrow(Tail).
+printelem(H):-(integer(H)->(H>9->write('P');write(H));write(H)).
 
 
 %misc
@@ -83,7 +111,7 @@ takeout(X,[F|R],[F|S]) :- takeout(X,R,S).
 
 %inicializador do jogador 1 joga com as pecas impares.
 initplayer(2):-initplayer(L,C,P,2),assert(getL(2,L)),assert(getC(2,C)),assert(getP(2,P)).
-initplayer(1):-initplayer(L,C,P,1),assert(getL(1,L)),assert(getC(1,C)),assert(getP(3,P)).
+initplayer(1):-initplayer(L,C,P,1),assert(getL(1,L)),assert(getC(1,C)),assert(getP(1,P)).
 initplayer(L,C,P,1):-L=[1,3,5,7,9],createnewhand(11,[],C),P=[].
 %inicializador do jogador 2 joga com as pecas pares.
 initplayer(L,C,P,2):-L=[0,2,4,6,8],createnewhand(10,[],C),P=[].
@@ -95,8 +123,10 @@ createnewhand(N,LC,D):-N1 is N-2,(N1>=0->addcamel(10,N1,LC,R),createnewhand(N1,R
 
 %gamestate
 fase:- getL(1,L1),getL(2,L2),(L1==[]->(L2==[]->false;true);true). %true -> fase de colocacao de lideres %false -> fase de colocacao de camelos.
-
-fim(C1,C2):-(C1==[]->(C2==[]->true;false);false). %true -> fim do jogo.
+allmembers:-p1c(A),p2c(B),allmembers(1,A),allmembers(2,B).
+allmembers(J,[H|T]):-getC(J,L),(member(H,L)->allmembers(J,T);false).
+allmembers(_,[]).
+fim:-allmembers. %true -> fim do jogo.
 %fase([],[]):-false. %fase 2
 
 
@@ -114,8 +144,8 @@ vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
 vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
 
 jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;!,false);false).
-jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,
-(V==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),
+jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(integer(V)->(V>9->V1=e;V1=V);V1=V),
+(V1==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),
 (vizinhoscolor(X,Y,Tabuleiro,Mcolor)->false;true);!,false);false).
 
 jogar(1,Camelo,X,Y,ListaLideres,NovaListaLideres):-
@@ -127,7 +157,13 @@ assert(getTab(NovoTab));false);false).
 
 jogar(2,Camelo,X,Y,ListaCam,NovaCam):-
 getTab(Tabuleiro),
-(member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Camelo,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),
+(member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Camelo,Tabuleiro)->getpos(X,Y,V,Tabuleiro),
+	!,(integer(V)->!,(even(Camelo)->J=2;J=1),!,getP(J,Pont),!,
+	Pcalc is V//10,!,
+	append(Pont,[Pcalc],PN),!,
+	retract(getP(J,Pont)),!,
+	assert(getP(J,PN)),true;true),!,
+setpos(X,Y,Camelo,Tabuleiro,NovoTab),
 !,takeout(Camelo,ListaCam,NovaCam),
 retract(getTab(Tabuleiro)),
 assert(getTab(NovoTab));false);false).
@@ -193,7 +229,9 @@ fase1(2).
 
 fase2(J):-
 getC(J,C1),!,
+getP(J,Pont),!,
 write('\nJogador '),write(J),write(': '),!,
+write('\nPecas de Pontos '),!,printlist(Pont),!,
 askCam(J,Csel1),!,
 askpos(X1,Y1,Csel1),!,
 (jogar(2,Csel1,X1,Y1,C1,C1N)->
@@ -213,12 +251,12 @@ fase2(2).
 test2:-retract(t(1)),assert(t(2)).
 test(X):-assert(t(1)),test2,t(X).
 
-fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
+fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
-gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
+gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
 run :-
-(fase->fase1;fase2),!,
+(fase->fase1;fim->fase2;false),!,
 run.
 
 
