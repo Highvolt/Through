@@ -1,6 +1,11 @@
 :-dynamic getTab/1.
 
 :-dynamic getL/2.
+
+
+fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w], [1, w, w, e, 1, e, w, w, e, e, w, w], [2, w, w, e, e, e, e, 5, e, e, e, w], [3, w, e, e, e, 3, e, e, e, e, e, w], [4, w, w, e, e, e, e, e, e, e, e, w], [5, w, e, e, e, e, 0, e, e, e, e, w], [6, w, e, e, e, e, e, e, e, e, e, w], [7, w, e, e, 2, e, e, e, e, e, e, w], [8, w, e, e, e, e, e, e, e, e, e, w], [9, w, e, e, e, e, e, e, e, 6, e, w], [10, w, e, e, e, e, e, e, e, e, e, w], [11, w, e, e, e, e, e, e, e, e, e, w], [12, w, e, e, 7, e, e, e, e, e, e, w], [13, w, e, e, w, e, e, e, e, e, e, w], [14, w, e, e, e, w, e, e, e, e, e, w], [15, w, e, e, w, w, w, e, e, e, e, w], [16, w, e, 4, e, w, w, e, e, e, e, w], [17, w, e, e, e, e, e, e, e, e, w, w], [18, w, e, e, e, e, e, e, e, e, e, w], [19, w, e, e, e, e, e, e, e, e, w, w], [20, w, w, e, e, e, e, e, e, 9, w, w], [21, w, e, e, e, e, e, 8, e, w, w, w], [22, w, w, e, e, e, e, e, e, w, w, w], [23, w, w, e, e, e, e, e, w, w, w, w], [24, w, w, w, e, e, e, e, w, w, w, w], [25, w, w, w, e, e, e, w, w, w, w, w], [26, w, w, w, w, e, e, w, w, w, w, w], [27, w, w, w, w, w, w, w, w, w, w, w]]).
+
+
 initialBoard(
 [[0,w,w,w,w,w,w,w,w,w,w,w],
 [1,w,w,e,e,e,w,w,e,e,w,w],
@@ -70,7 +75,7 @@ printrow([Head|Tail]):-(Head=e->write(' ');write(Head)), write('\\_/'),printrow(
 even(X):-N is X/2,(integer(N)->true;false).
 
 %camelos
-mesmacor(X,Y):- (X==Y->true;(even(X)->N is X+1,N==Y;N is X-1,N==Y)).
+mesmacor(X,Y):- (X==Y->true;(even(X)->N is X+1,Y=N;N is X-1,Y=N)).
 addcamel(N,C,LC,D):-N1 is N-1, (N1>=0->append(LC,[C],R),addcamel(N1,C,R,D);D=LC).
 %retira camelos usage takeout(camelo,lista de camelos, retorno)
 takeout(X,[X|R],R).
@@ -99,7 +104,8 @@ fim(C1,C2):-(C1==[]->(C2==[]->true;false);false). %true -> fim do jogo.
 vizinhoscolor(X,Y,Tab,Color):-vizinhoscolor(X,Y,Tab,Color,1).
 vizinhoscolor(X,Y,Tab,Cam,Viz):-(Viz>8->false;!,(vizinhoex(Viz,X,Y,Tab,Cam)->true;N is Viz+1,!,vizinhoscolor(X,Y,Tab,Cam,N))).
 
-vizinhoex(Viz,X,Y,Tab,Valor):-(vizinho(Viz,X,Y,Tab,V)->!,(V==Valor->true;!,false);true).
+%vizinhoex(Viz,X,Y,Tab,Valor):-(vizinho(Viz,X,Y,Tab,V)->!,write('\nvalor '),write(Viz),write(': '),write(V),(V==Valor->true;!,false);false). %for debug only
+vizinhoex(Viz,X,Y,Tab,Valor):-(vizinho(Viz,X,Y,Tab,V)->!,(V==Valor->true;!,false);false).
 
 vizinhosempty(X,Y,Tab):-vizinhosempty(X,Y,Tab,1).
 vizinhosempty(X,Y,Tab,Viz):-(Viz>8->true;!,(vizinhoex(Viz,X,Y,Tab,e)->N is Viz+1,!,vizinhosempty(X,Y,Tab,N);(vizinhoex(Viz,X,Y,Tab,w)->!,N is Viz+1,!,vizinhosempty(X,Y,Tab,N);false))).
@@ -108,7 +114,9 @@ vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
 vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
 
 jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;!,false);false).
-jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),(vizinhoscolor(X,Y,Tabuleiro,Mcolor)->false;true);!,false);false).
+jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,
+(V==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),
+(vizinhoscolor(X,Y,Tabuleiro,Mcolor)->false;true);!,false);false).
 
 jogar(1,Camelo,X,Y,ListaLideres,NovaListaLideres):-
 getTab(Tabuleiro),
@@ -119,7 +127,7 @@ assert(getTab(NovoTab));false);false).
 
 jogar(2,Camelo,X,Y,ListaCam,NovaCam):-
 getTab(Tabuleiro),
-(member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),
+(member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Camelo,Tabuleiro)->setpos(X,Y,Camelo,Tabuleiro,NovoTab),
 !,takeout(Camelo,ListaCam,NovaCam),
 retract(getTab(Tabuleiro)),
 assert(getTab(NovoTab));false);false).
@@ -145,7 +153,7 @@ cin(Xt),
 write('Linha:'),
 cin(Yt),
 getTab(B),
-(jogadavalida(2,Xt,Yt,C,B)->X=Xt,Y=Yt,true;write('jogada invalida\n'),askpos(X,Y)).
+(jogadavalida(2,Xt,Yt,C,B)->X=Xt,Y=Yt,true;write('jogada invalida\n'),askpos(X,Y,C)).
 
 
 askLider(J,C):-
@@ -189,8 +197,8 @@ write('\nJogador '),write(J),write(': '),!,
 askCam(J,Csel1),!,
 askpos(X1,Y1,Csel1),!,
 (jogar(2,Csel1,X1,Y1,C1,C1N)->
-retract(getL(J,C1)),
-assert(getL(J,C1N));fase2(J)).
+retract(getC(J,C1)),
+assert(getC(J,C1N));fase2(J)).
 
 fase2:-
 getTab(Tabuleiro),!,
@@ -204,6 +212,8 @@ fase2(2).
 :-dynamic t/1.
 test2:-retract(t(1)),assert(t(2)).
 test(X):-assert(t(1)),test2,t(X).
+
+fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
 gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),initialBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
