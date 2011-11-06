@@ -24,16 +24,16 @@ choose(List, Elt) :-
         
 appender(X,Y,L):- append([X],[Y],L).
         
-generate(X,Y,L,I,K):- I =:= 0 -> append(L,[],K), !;
-                  choose(X,Z), choose(Y,M),appender(Z,M,T), (not(member(T,L))->append([T],L,NovaL), delete2(Z,X,NovaX), delete2(M,Y,NovaY), generate(NovaX,NovaY,NovaL,I-1,K);generate(X,Y,L,I,K)).
+generate(X,Y,L,I,K,Tab):- I =:= 0 -> append(L,[],K), !;
+                  choose(X,Z), choose(Y,M),(getpos(Z,M,e,Tab)->!,appender(Z,M,T), (not(member(T,L))->append([T],L,NovaL), delete2(Z,X,NovaX), delete2(M,Y,NovaY), generate(NovaX,NovaY,NovaL,I-1,K,Tab);generate(X,Y,L,I,K,Tab));generate(X,Y,L,I,K,Tab)).
 
 getpoints(L):-getXpDefault(X),getYpDefault(Y),getPDef(P),generatePalmPlaces(X,Y,P,[],L).
 %chamada de teste generatePalmPlaces([1,2,3,4,13,14],[5,6,7,8,9,10],[10,20,10,40],[],K).
-generatePalmPlaces(X,Y,P,L,K):- length(P,I),
-                          generate(X,Y,L,I,K),!.
+generatePalmPlaces(X,Y,P,L,K):- length(P,I),initialBoard(B),
+                          generate(X,Y,L,I,K,B),!.
                           
                           
-addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),choose(PL,P),getpos(X,Y,Ret,TB),(Ret==e->appender(X,Y,Posdel),delete2(Posdel,PosPont,NPosPont),delete2(P,PL,NPL),setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G);write('Posiçao cheia\n'),addPoints(PosPont,PL,TB,G)).
+addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),!,choose(PL,P),!,getpos(X,Y,Ret,TB),!,appender(X,Y,Posdel),!,delete2(Posdel,PosPont,NPosPont),(Ret==e->!,delete2(P,PL,NPL),!,setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G);write('X '+X+' Y '+Y+' ret '+Ret+'Posiçao cheia\n'),Y1 is Y-1,X1 is X-1, appender(X1,Y1,Posadd),append(PosPont,[Posadd],Npos),addPoints(Npos,PL,TB,G)).
 addPoints([],[],T,T).
 initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
 initBoard(_).
@@ -296,4 +296,15 @@ run :-
 (fase->fase1;fim->fase2;false),!,
 run.
 
+floodfill(X,Y,Target_key,Replace_key, Tab,NT):-
+notrace,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->NT=Tab,true;
+notrace,setpos(X,Y,Replace_key,Tab,NTab),!,notrace,
+Y1 is Y-2,!, floodfill(X,Y1,Target_key,Replace_key,NTab,NT1),!,
+Y2 is Y+2,!, floodfill(X,Y2,Target_key,Replace_key,NT1,NT2),!,
+Y3 is Y-1,!,(even(Y)->X1 is X-1;X1 is X),!, floodfill(X1,Y3,Target_key,Replace_key,NT2,NT3),!,
+Y4 is Y-1,!,(even(Y)->X2 is X;X2 is X+1),!, floodfill(X2,Y4,Target_key,Replace_key,NT3,NT4),!,
+Y5 is Y+1,!,(even(Y)->X3 is X-1;X3 is X),!, floodfill(X3,Y5,Target_key,Replace_key,NT4,NT5),!,
+Y6 is Y+1,!,(even(Y)->X4 is X;X4 is X+1),!, floodfill(X4,Y6,Target_key,Replace_key,NT5,NT6),!,
+X5 is X-1,!,floodfill(X5,Y,Target_key,Replace_key,NT6,NT7),!,
+X6 is X+1,!, floodfill(X6,Y,Target_key,Replace_key,NT7,NT));notrace,NT=Tab).
 
