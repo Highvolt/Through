@@ -4,8 +4,8 @@
 :-dynamic getC/2.
 
 %gerar pontos para os poços...
-getXpDefault([4,5,8,7,4,5,8,6,2,3,4,3,6,7,8]).
-getYpDefault([2,3,4,5,6,5,7,20,21,19,13,14,17,14,21]).
+getXpDefault([4,5,8,7,4,5,8,6,2,3,4,3,6,7,5,2,3,3]).
+getYpDefault([2,3,4,5,6,5,7,20,21,19,13,14,17,14,21,12,14,15,20]).
 getPDef([10,10,10,10,20,20,20,20,20,10,30,30,30,10,30]).
 delete2(X,L,DL):-del2(X,L,[],DL).
 
@@ -21,18 +21,18 @@ choose(List, Elt) :-
         length(List, Length),
         random(0, Length, Index),
         nth0(Index, List, Elt).
-        
+
 appender(X,Y,L):- append([X],[Y],L).
-        
-generate(X,Y,L,I,K,Tab):- I =:= 0 -> append(L,[],K), !;
-                  choose(X,Z), choose(Y,M),(getpos(Z,M,e,Tab)->!,appender(Z,M,T), (not(member(T,L))->append([T],L,NovaL), delete2(Z,X,NovaX), delete2(M,Y,NovaY), generate(NovaX,NovaY,NovaL,I-1,K,Tab);generate(X,Y,L,I,K,Tab));generate(X,Y,L,I,K,Tab)).
+
+generate(X,Y,L,I,K,Tab):- I == 0 -> append(L,[],K), !;
+                  choose(X,Z), choose(Y,M),(getpos(Z,M,e,Tab)->!,appender(Z,M,T), (not(member(T,L))->append([T],L,NovaL), delete2(Z,X,NovaX), delete2(M,Y,NovaY),I2 is I-1, generate(NovaX,NovaY,NovaL,I2,K,Tab);generate(X,Y,L,I,K,Tab));generate(X,Y,L,I,K,Tab)).
 
 getpoints(L):-getXpDefault(X),getYpDefault(Y),getPDef(P),generatePalmPlaces(X,Y,P,[],L).
 %chamada de teste generatePalmPlaces([1,2,3,4,13,14],[5,6,7,8,9,10],[10,20,10,40],[],K).
-generatePalmPlaces(X,Y,P,L,K):- length(P,I),initialBoard(B),
-                          generate(X,Y,L,I,K,B),!.
-                          
-                          
+generatePalmPlaces(X,Y,P,L,K):- initialBoard(B),
+                          generate(X,Y,L,15,K,B),!.
+
+
 addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),!,choose(PL,P),!,getpos(X,Y,Ret,TB),!,appender(X,Y,Posdel),!,delete2(Posdel,PosPont,NPosPont),(Ret==e->!,delete2(P,PL,NPL),!,setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G);write('X '+X+' Y '+Y+' ret '+Ret+'Posiçao cheia\n'),Y1 is Y-1,X1 is X-1, appender(X1,Y1,Posadd),append(PosPont,[Posadd],Npos),addPoints(Npos,PL,TB,G)).
 addPoints([],[],T,T).
 initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
@@ -117,16 +117,16 @@ enclosed(
 [13,w,e,e,w,e,e,e,e,e,e,w],
 [14,w,e,e,e,w,e,e,e,e,e,w],
 [15,w,e,e,w,w,w,e,e,e,e,w],
-[16,w,e,e,e,w,w,e,e,e,e,w],
-[17,w,e,e,e,e,e,4,4,4,w,w],
-[18,w,e,e,e,e,e,4,e,e,e,w],
-[19,w,e,e,e,e,e,4,e,e,w,w],
-[20,w,w,e,e,e,e,4,e,e,w,w],
+[16,w,e,e,e,w,w,4,4,4,4,w],
+[17,w,e,e,e,e,4,4,4,4,w,w],
+[18,w,e,e,e,e,4,4,e,e,e,w],
+[19,w,e,e,e,e,4,4,e,e,w,w],
+[20,w,w,e,e,e,4,4,e,e,w,w],
 [21,w,3,3,3,3,3,3,3,w,w,w],
 [22,w,w,3,3,3,3,3,3,w,w,w],
 [23,w,w,e,e,e,e,e,w,w,w,w],
 [24,w,w,w,e,e,e,e,w,w,w,w],
-[25,w,w,w,e,e,e,w,w,w,w,w],
+[25,w,w,w,e,50,e,w,w,w,w,w],
 [26,w,w,w,w,e,e,w,w,w,w,w],
 [27,w,w,w,w,w,w,w,w,w,w,w]]
 ).
@@ -226,11 +226,11 @@ assert(getTab(NovoTab));false);false).
 jogar(2,Camelo,X,Y,ListaCam,NovaCam):-
 getTab(Tabuleiro),
 (member(Camelo,ListaCam)->(jogadavalida(2,X,Y,Camelo,Tabuleiro)->getpos(X,Y,V,Tabuleiro),
-	!,(integer(V)->!,(even(Camelo)->J=2;J=1),!,getP(J,Pont),!,
-	Pcalc is V//10,!,
-	append(Pont,[Pcalc],PN),!,
-	retract(getP(J,Pont)),!,
-	assert(getP(J,PN)),true;true),!,
+        !,(integer(V)->!,(even(Camelo)->J=2;J=1),!,getP(J,Pont),!,
+        Pcalc is V//10,!,
+        append(Pont,[Pcalc],PN),!,
+        retract(getP(J,Pont)),!,
+        assert(getP(J,PN)),true;true),!,
 setpos(X,Y,Camelo,Tabuleiro,NovoTab),
 !,takeout(Camelo,ListaCam,NovaCam),
 retract(getTab(Tabuleiro)),
@@ -327,6 +327,19 @@ run :-
 (fase->fase1;fim->fase2;false),!,
 run.
 
+floodfill2(X,Y,Target_key,Replace_key, NReplace,Tab,NT):-
+notrace,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->(V==w->NT=Tab;((V==Replace_key;V==NReplace)->NT=Tab;(integer(V),V>9->NT=Tab;false))),true;
+notrace,setpos(X,Y, NReplace,Tab,NTab),!,notrace,
+Y1 is Y-2,!, floodfill2(X,Y1,Target_key,Replace_key, NReplace,NTab,NT1),!,
+Y2 is Y+2,!, floodfill2(X,Y2,Target_key,Replace_key, NReplace,NT1,NT2),!,
+Y3 is Y-1,!,(even(Y)->X1 is X-1;X1 is X),!, floodfill2(X1,Y3,Target_key,Replace_key, NReplace,NT2,NT3),!,
+Y4 is Y-1,!,(even(Y)->X2 is X;X2 is X+1),!, floodfill2(X2,Y4,Target_key,Replace_key, NReplace,NT3,NT4),!,
+Y5 is Y+1,!,(even(Y)->X3 is X-1;X3 is X),!, floodfill2(X3,Y5,Target_key,Replace_key, NReplace,NT4,NT5),!,
+Y6 is Y+1,!,(even(Y)->X4 is X;X4 is X+1),!, floodfill2(X4,Y6,Target_key,Replace_key, NReplace,NT5,NT6),!,
+X5 is X-1,!,floodfill2(X5,Y,Target_key,Replace_key, NReplace,NT6,NT7),!,
+X6 is X+1,!, floodfill2(X6,Y,Target_key,Replace_key, NReplace,NT7,NT));notrace,NT=Tab).
+
+
 floodfill(X,Y,Target_key,Replace_key, Tab,NT):-
 notrace,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->NT=Tab,true;
 notrace,setpos(X,Y,Replace_key,Tab,NTab),!,notrace,
@@ -342,16 +355,16 @@ X6 is X+1,!, floodfill(X6,Y,Target_key,Replace_key,NT7,NT));notrace,NT=Tab).
 
 allintegersequal([H|T],C,Ret):-
 ((integer(H),H<10)->
-	(C==e->
-		!,allintegersequal(T,H,Ret),!
-		;
-			(C==H->
-				!,allintegersequal(T,H,Ret),!,
-				false
-		)
-	)
-	;
-	!,allintegersequal(T,C,Ret),!
+        (C==e->
+                !,allintegersequal(T,H,Ret),!
+                ;
+                        (C==H->
+                                !,allintegersequal(T,H,Ret),!,
+                                true
+                )
+        )
+        ;
+        !,allintegersequal(T,C,Ret),!
 ).
 
 allintegersequal([],T,Ret):-(integer(T)->Ret=T;false).
@@ -367,7 +380,7 @@ write('X: '),write(X),write(' Y: '),write(Y),nl,
 (vizinho(7,X,Y,B,Valor6)->true;true,Valor6=e),!,
 (vizinho(8,X,Y,B,Valor7)->true;true,Valor7=e),!,
 LV=[Valor,Valor1,Valor2,Valor3,Valor4,Valor5,Valor6,Valor7],printlist(LV),nl,!,
-(allintegersequal(LV,e,Ret)->V=Ret,write(Ret),nl,true;false).
+(allintegersequal(LV,e,Ret)->write('valid'),write('V: '),write(V),nl,V=Ret,true;false).
 
 
 findalle(Tab,FT):-findalle(0,0,Tab,FT).
@@ -375,17 +388,21 @@ findalle(Tab,FT):-findalle(0,0,Tab,FT).
 findalle(X,Y,Tab,FT):-
 write('X: '),write(X),write(' Y: '),write(Y),
 (getpos(X,Y,V,Tab)->!,retractall(error),!,
-	write('V: '),write(V),nl,!,
-	(V==e->
-		(getneighboorint(X,Y,V,Tab)->
-			!,floodfill(X,Y,e,V,Tab,NT)
-			;
-			!,floodfill(X,Y,e,w,Tab,NT)
-			),!,X2 is X+1,!,findalle(X2,Y,NT,FT)
-		;
-		
-		true,!,X1 is X+1,!,findalle(X1,Y,Tab,FT))
-	;
-	(error->write('done'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
+        write('V: '),write(V),nl,!,
+        (V==e->
+                (getneighboorint(X,Y,CAR,Tab)->
+                        !,(even(CAR)->J=z;J=a),(floodfill2(X,Y,e,CAR,J,Tab,Lodo)->NT=Lodo;floodfill(X,Y,e,' ',Tab,NT)),notrace
+                        ;
+                        !,floodfill(X,Y,e,' ',Tab,NT)
+                        ),!,X2 is X+1,!,findalle(X2,Y,NT,FT)
+                ;
+
+                true,!,X1 is X+1,!,findalle(X1,Y,Tab,FT))
+        ;
+        (error->write('done'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
 ).
 
+countPec(Peca,Tab,N):-countPecaux(Peca,Tab,N,0,0,0).
+countPecaux(Peca,Tab,N,X,Y,Acc):-
+(getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->Acc1 is Acc+1,X2 is X+1,!,countPecaux(Peca,Tab,N,X2,Y,Acc1);X2 is X+1,!,countPecaux(Peca,Tab,N,X2,Y,Acc));
+(error->write('done'),N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,countPecaux(Peca,Tab,N,X2,Y2,Acc))).
