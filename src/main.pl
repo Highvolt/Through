@@ -100,6 +100,37 @@ initialBoard(
 [27,w,w,w,w,w,w,w,w,w,w,w]]
 ).
 
+enclosed(
+[[0,w,w,w,w,w,w,w,w,w,w,w],
+[1,w,w,e,e,e,w,w,e,e,w,w],
+[2,w,w,e,e,e,e,e,e,e,e,w],
+[3,w,e,e,e,e,e,e,e,e,e,w],
+[4,w,w,e,e,e,e,e,e,e,e,w],
+[5,w,e,e,e,e,e,e,e,e,e,w],
+[6,w,e,e,e,e,e,e,e,e,e,w],
+[7,w,e,e,e,e,e,e,e,e,e,w],
+[8,w,e,e,e,e,e,e,e,e,e,w],
+[9,w,e,e,e,e,e,e,e,e,e,w],
+[10,w,e,e,e,e,e,e,e,e,e,w],
+[11,w,e,e,e,e,e,e,e,e,e,w],
+[12,w,e,e,e,e,e,e,e,e,e,w],
+[13,w,e,e,w,e,e,e,e,e,e,w],
+[14,w,e,e,e,w,e,e,e,e,e,w],
+[15,w,e,e,w,w,w,e,e,e,e,w],
+[16,w,e,e,e,w,w,e,e,e,e,w],
+[17,w,e,e,e,e,e,4,4,4,w,w],
+[18,w,e,e,e,e,e,4,e,e,e,w],
+[19,w,e,e,e,e,e,4,e,e,w,w],
+[20,w,w,e,e,e,e,4,e,e,w,w],
+[21,w,3,3,3,3,3,3,3,w,w,w],
+[22,w,w,3,3,3,3,3,3,w,w,w],
+[23,w,w,e,e,e,e,e,w,w,w,w],
+[24,w,w,w,e,e,e,e,w,w,w,w],
+[25,w,w,w,e,e,e,w,w,w,w,w],
+[26,w,w,w,w,e,e,w,w,w,w,w],
+[27,w,w,w,w,w,w,w,w,w,w,w]]
+).
+
 %list handlers
 getpos(X,Y,V,B):-X1 is X+1,(X1>=0->(Y>=0->getrow(Y,L,B),!,getrow(X1,V,L);false);false). %x+1 por causa da label
 getrow(Y,L,B):-getrow(Y,L,0,B).
@@ -307,4 +338,54 @@ Y5 is Y+1,!,(even(Y)->X3 is X-1;X3 is X),!, floodfill(X3,Y5,Target_key,Replace_k
 Y6 is Y+1,!,(even(Y)->X4 is X;X4 is X+1),!, floodfill(X4,Y6,Target_key,Replace_key,NT5,NT6),!,
 X5 is X-1,!,floodfill(X5,Y,Target_key,Replace_key,NT6,NT7),!,
 X6 is X+1,!, floodfill(X6,Y,Target_key,Replace_key,NT7,NT));notrace,NT=Tab).
+
+
+allintegersequal([H|T],C,Ret):-
+((integer(H),H<10)->
+	(C==e->
+		!,allintegersequal(T,H,Ret),!
+		;
+			(C==H->
+				!,allintegersequal(T,H,Ret),!,
+				false
+		)
+	)
+	;
+	!,allintegersequal(T,C,Ret),!
+).
+
+allintegersequal([],T,Ret):-(integer(T)->Ret=T;false).
+
+getneighboorint(X,Y,V,B):-
+write('X: '),write(X),write(' Y: '),write(Y),nl,
+(vizinho(1,X,Y,B,Valor)->true;true,Valor=e),!,
+(vizinho(2,X,Y,B,Valor1)->true;true,Valor1=e),!,
+(vizinho(3,X,Y,B,Valor2)->true;true,Valor2=e),!,
+(vizinho(4,X,Y,B,Valor3)->true;true,Valor3=e),!,
+(vizinho(5,X,Y,B,Valor4)->true;true,Valor4=e),!,
+(vizinho(6,X,Y,B,Valor5)->true;true,Valor5=e),!,
+(vizinho(7,X,Y,B,Valor6)->true;true,Valor6=e),!,
+(vizinho(8,X,Y,B,Valor7)->true;true,Valor7=e),!,
+LV=[Valor,Valor1,Valor2,Valor3,Valor4,Valor5,Valor6,Valor7],printlist(LV),nl,!,
+(allintegersequal(LV,e,Ret)->V=Ret,write(Ret),nl,true;false).
+
+
+findalle(Tab,FT):-findalle(0,0,Tab,FT).
+
+findalle(X,Y,Tab,FT):-
+write('X: '),write(X),write(' Y: '),write(Y),
+(getpos(X,Y,V,Tab)->!,retractall(error),!,
+	write('V: '),write(V),nl,!,
+	(V==e->
+		(getneighboorint(X,Y,V,Tab)->
+			!,floodfill(X,Y,e,V,Tab,NT)
+			;
+			!,floodfill(X,Y,e,w,Tab,NT)
+			),!,X1 is X+1,!,findalle(X1,Y,NT,FT)
+		;
+		
+		true,!,X1 is X+1,!,findalle(X1,Y,Tab,FT))
+	;
+	(error->write('done'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
+).
 
