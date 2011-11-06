@@ -33,7 +33,7 @@ generatePalmPlaces(X,Y,P,L,K):- length(P,I),
                           generate(X,Y,L,I,K),!.
                           
                           
-addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),choose(PL,P),appender(X,Y,Posdel),delete2(Posdel,PosPont,NPosPont),delete2(P,PL,NPL),setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G).
+addPoints(PosPont,PL,TB,G):-choose(PosPont,[X|[Y|_]]),choose(PL,P),getpos(X,Y,Ret,TB),(Ret==e->appender(X,Y,Posdel),delete2(Posdel,PosPont,NPosPont),delete2(P,PL,NPL),setpos(X,Y,P,TB,NTB),addPoints(NPosPont,NPL,NTB,G);write('Posiçao cheia\n'),addPoints(PosPont,PL,TB,G)).
 addPoints([],[],T,T).
 initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
 initBoard(_).
