@@ -381,7 +381,7 @@ write('X: '),write(X),write(' Y: '),write(Y),
 			!,floodfill(X,Y,e,V,Tab,NT)
 			;
 			!,floodfill(X,Y,e,w,Tab,NT)
-			),!,X1 is X+1,!,findalle(X1,Y,NT,FT)
+			),!,X2 is X+1,!,findalle(X2,Y,NT,FT)
 		;
 		
 		true,!,X1 is X+1,!,findalle(X1,Y,Tab,FT))
