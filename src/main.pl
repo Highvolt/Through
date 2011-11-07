@@ -327,7 +327,7 @@ test(X):-assert(t(1)),test2,t(X).
 
 fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
-show_lastpontuation:-enclosed(B),findalle(0,0,B,N),printboard(N),nl,getPoint(1),nl,getPoint(2).
+show_lastpontuation:-getTab(B),findalle(0,0,B,N),printboard(N),nl,getPoint(1),nl,getPoint(2).
 getpalmeirasfor(_,[],_).
 getpalmeirasfor(J,[H|T],Tab):-shearchnear(H,Tab,_,0,0,0),getpalmeirasfor(J,T,Tab).
 
