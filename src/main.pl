@@ -38,6 +38,8 @@ addPoints([],[],T,T).
 initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
 initBoard(_).
 
+estadofim([[0, w, w, w, w, w, w, w, w, w, w, w], [1, w, w, e, e, e, w, w, e, e, w, w], [2, w, w, e, e, e, e, e, 1, e, e, w], [3, w, e, e, 20, e, e, e, e, e, e, w], [4, w, w, e, e, e, 20, e, e, e, e, w], [5, w, e, e, e, 10, e, e, 30, e, e, w], [6, w, e, e, e, e, 10, e, e, e, e, w], [7, w, e, 30, e, e, e, e, e, e, e, w], [8, w, e, e, e, e, e, e, 5, e, e, w], [9, w, e, 9, e, e, e, e, e, e, e, w], [10, w, 9, e, 9, e, 2, e, e, e, e, w], [11, w, 9, 9, 9, e, e, e, e, e, e, w], [12, w, e, e, 9, e, e, e, e, 30, e, w], [13, w, e, 9, w, e, e, e, e, 10, e, w], [14, w, e, 9, 20, w, e, 10, e, e, e, w], [15, w, 9, 9, w, w, w, e, e, e, 6, w], [16, w, e, 4, e, w, w, e, e, e, e, w], [17, w, e, e, e, 20, e, e, e, e, w, w], [18, w, e, e, e, e, e, e, 3, e, e, w], [19, w, e, e, e, e, e, e, e, e, w, w], [20, w, w, 10, 20, e, e, e, e, e, w, w], [21, w, e, e, 30, e, e, 10, e, w, w, w], [22, w, w, e, 8, 8, e, e, e, w, w, w], [23, w, w, 7, 8, 8, 0, e, w, w, w, w], [24, w, w, w, 8, 8, 8, 8, w, w, w, w], [25, w, w, w, 8, 8, 8, w, w, w, w, w], [26, w, w, w, w, e, e, w, w, w, w, w], [27, w, w, w, w, w, w, w, w, w, w, w]]).
+
 fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w],
  [1, w, w, e, 1, e, w, w, e, e, w, w],
  [2, w, w, e, e, e, e, 5, e, e, e, w],
@@ -72,26 +74,26 @@ p2c([0,2,4,6,8]).
 initialBoard(
 [[0,w,w,w,w,w,w,w,w,w,w,w],
 [1,w,w,e,e,e,w,w,e,e,w,w],
-[2,w,w,e,e,e,e,e,e,e,e,w],
+[2,w,w,e,50,e,e,e,e,e,e,w],
 [3,w,e,e,e,e,e,e,e,e,e,w],
 [4,w,w,e,e,e,e,e,e,e,e,w],
 [5,w,e,e,e,e,e,e,e,e,e,w],
 [6,w,e,e,e,e,e,e,e,e,e,w],
-[7,w,e,e,e,e,e,e,e,e,e,w],
+[7,w,e,e,e,e,e,e,e,50,e,w],
 [8,w,e,e,e,e,e,e,e,e,e,w],
 [9,w,e,e,e,e,e,e,e,e,e,w],
 [10,w,e,e,e,e,e,e,e,e,e,w],
-[11,w,e,e,e,e,e,e,e,e,e,w],
+[11,w,e,50,e,e,e,e,e,e,e,w],
 [12,w,e,e,e,e,e,e,e,e,e,w],
 [13,w,e,e,w,e,e,e,e,e,e,w],
 [14,w,e,e,e,w,e,e,e,e,e,w],
 [15,w,e,e,w,w,w,e,e,e,e,w],
-[16,w,e,e,e,w,w,e,e,e,e,w],
+[16,w,e,e,e,w,w,e,50,e,e,w],
 [17,w,e,e,e,e,e,e,e,e,w,w],
 [18,w,e,e,e,e,e,e,e,e,e,w],
 [19,w,e,e,e,e,e,e,e,e,w,w],
 [20,w,w,e,e,e,e,e,e,e,w,w],
-[21,w,e,e,e,e,e,e,e,w,w,w],
+[21,w,e,e,e,50,e,e,e,w,w,w],
 [22,w,w,e,e,e,e,e,e,w,w,w],
 [23,w,w,e,e,e,e,e,w,w,w,w],
 [24,w,w,w,e,e,e,e,w,w,w,w],
@@ -164,7 +166,7 @@ printwhite([]).
 printwhite([_|T]):-write(' \\ /'),printwhite(T).
 printrow([]).
 printrow([Head|Tail]):-(Head=e->write(' ');printelem(Head)), write(' | '),printrow(Tail).
-printelem(H):-(integer(H)->(H>9->write('P');write(H));write(H)).
+printelem(H):-(integer(H)->(H>9,H<40->write('P');(H>40->write('S');write(H)));write(H)).
 
 
 %misc
@@ -212,7 +214,7 @@ vizinhovalidator(X,Y,Tab,Valor):-vizinhovalidator(X,Y,Tab,Valor,1).
 vizinhovalidator(X,Y,Tab,Valor,Viz):-(Viz>8->false;(vizinho(Viz,X,Y,Tab,Valor)->true;N is Viz+1,vizinhovalidator(X,Y,Tab,Valor,N))).
 
 jogadavalida(1,X,Y,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(V==e->(vizinhosempty(X,Y,Tabuleiro)->true;!,false);false).
-jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(integer(V)->(V>9->V1=e;V1=V);V1=V),
+jogadavalida(2,X,Y,Color,Tabuleiro):-getpos(X,Y,V,Tabuleiro),!,(integer(V)->((V>9,V<40)->V1=e;V1=V);V1=V),
 (V1==e->(vizinhoscolor(X,Y,Tabuleiro,Color)->mesmacor(Color,Mcolor),
 (vizinhoscolor(X,Y,Tabuleiro,Mcolor)->false;true);!,false);false).
 
@@ -325,23 +327,25 @@ fase2(2).
 test2:-retract(t(1)),assert(t(2)).
 test(X):-assert(t(1)),test2,t(X).
 
-fase2cheat:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
+fimcheat:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),estadofim(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),retractall(getC(_,_)),assert(getC(1,[])),assert(getC(2,[])),!,run.
+fase2cheat:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
-show_lastpontuation:-getTab(B),findalle(0,0,B,N),printboard(N),nl,getPoint(1),nl,getPoint(2).
+show_lastpontuation:-getTab(B),findalle(0,0,B,N),printboard(N),nl,getPoint(1,B),nl,getPoint(2,B),assert(done).
 getpalmeirasfor(_,[],_).
 getpalmeirasfor(J,[H|T],Tab):-shearchnear(H,Tab,_,0,0,0),getpalmeirasfor(J,T,Tab).
 
 
-getpalmeirasfor(J,Tab):-(J==1->p1c(Lista);p2c(Lista)),getpalmeirasfor(J,Lista,Tab).
-getPoint(J):-(J==1->write('Jogador 1:\n'),
-	countPec(a,N,Times),(shearchnear(a,N,T,0,0,0)->true;true),getPalmeirasfor(1,T),getP(1,K),sumList(K,Res),write('Pontuacao: '),write(Res);
-	write('Jogador 2:\n'),countPec(z,N,Times),(shearchnear(z,N,T,0,0,0)->true;true),getPalmeirasfor(2,T),getP(2,K),sumList(K,Res),write(Res)).
+getpalmeirasfor(J,Tab):-(J==1->p1c(Lista);p2c(Lista)),!,getpalmeirasfor(J,Lista,Tab).
+getPoint(J,N):-(J==1->write('Jogador 1:\n'),
+	countPec(a,N,Times),(shearchnear(a,N,T,0,0,0)->true;true),getpalmeirasfor(1,T),getP(1,K),sumList(K,Res),write('Pontuacao: '),!,write(Res);
+	write('Jogador 2:\n'),countPec(z,N,Times),(shearchnear(z,N,T,0,0,0)->true;true),getpalmeirasfor(2,T),getP(2,K),sumList(K,Res),write(Res)).
 	
-gamestart:-retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
+gamestart:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
 run :-
+(not(done)->
 (fase->fase1;fim->fase2;show_lastpontuation),!,
-run.
+run;true).
 
 floodfill3(X,Y,Target_key,Replace_key, Tab,NT):-
 (getpos(X,Y,V,Tab)->(not(V==Target_key)->
