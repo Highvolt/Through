@@ -417,7 +417,7 @@ LV=[Valor,Valor1,Valor2,Valor3,Valor4,Valor5,Valor6,Valor7],printlist(LV),nl,!,
 findalle(Tab,FT):-findalle(0,0,Tab,FT).
 
 findalle(X,Y,Tab,FT):-
-write('X: '),write(X),write(' Y: '),write(Y),
+%write('X: '),write(X),write(' Y: '),write(Y),
 (getpos(X,Y,V,Tab)->!,retractall(error),!,
         write('V: '),write(V),nl,!,
         (V==e->
