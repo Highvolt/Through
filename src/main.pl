@@ -124,7 +124,7 @@ enclosed(
 [20,w,w,e,e,e,4,4,e,e,w,w],
 [21,w,3,3,3,3,3,3,3,w,w,w],
 [22,w,w,3,3,3,3,3,3,w,w,w],
-[23,w,w,e,e,e,e,e,w,w,w,w],
+[23,w,w,e,30,e,e,e,w,w,w,w],
 [24,w,w,w,e,e,e,e,w,w,w,w],
 [25,w,w,w,e,50,e,w,w,w,w,w],
 [26,w,w,w,w,e,e,w,w,w,w,w],
@@ -327,8 +327,23 @@ run :-
 (fase->fase1;fim->fase2;false),!,
 run.
 
+floodfill3(X,Y,Target_key,Replace_key, Tab,NT):-
+notrace,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->
+(integer(V),V>9->(Target_key==a->J=1;J=2),(getP(J,L)->L1 =L;L1 =[]),V1 is V/10,append(L1,[V1],NLP),retractall(getP(J,_)),assert(getP(J,NLP)),setpos(X,Y,Target_key,Tab,NTab),floodfill3(X,Y,Target_key,Replace_key, NTab,NT);NT=Tab),
+NT=Tab,true;
+notrace,setpos(X,Y,Replace_key,Tab,NTab),!,notrace,
+Y1 is Y-2,!, floodfill3(X,Y1,Target_key,Replace_key,NTab,NT1),!,
+Y2 is Y+2,!, floodfill3(X,Y2,Target_key,Replace_key,NT1,NT2),!,
+Y3 is Y-1,!,(even(Y)->X1 is X-1;X1 is X),!, floodfill3(X1,Y3,Target_key,Replace_key,NT2,NT3),!,
+Y4 is Y-1,!,(even(Y)->X2 is X;X2 is X+1),!, floodfill3(X2,Y4,Target_key,Replace_key,NT3,NT4),!,
+Y5 is Y+1,!,(even(Y)->X3 is X-1;X3 is X),!, floodfill3(X3,Y5,Target_key,Replace_key,NT4,NT5),!,
+Y6 is Y+1,!,(even(Y)->X4 is X;X4 is X+1),!, floodfill3(X4,Y6,Target_key,Replace_key,NT5,NT6),!,
+X5 is X-1,!,floodfill3(X5,Y,Target_key,Replace_key,NT6,NT7),!,
+X6 is X+1,!, floodfill3(X6,Y,Target_key,Replace_key,NT7,NT));notrace,NT=Tab).
+
+
 floodfill2(X,Y,Target_key,Replace_key, NReplace,Tab,NT):-
-notrace,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->(V==w->NT=Tab;((V==Replace_key;V==NReplace)->NT=Tab;(integer(V),V>9->NT=Tab;false))),true;
+notrace,!,(getpos(X,Y,V,Tab)->notrace,(not(V==Target_key)->(V==w->NT=Tab;((V==Replace_key;V==NReplace)->NT=Tab;(integer(V),V>9->NT=Tab;false))),true;
 notrace,setpos(X,Y, NReplace,Tab,NTab),!,notrace,
 Y1 is Y-2,!, floodfill2(X,Y1,Target_key,Replace_key, NReplace,NTab,NT1),!,
 Y2 is Y+2,!, floodfill2(X,Y2,Target_key,Replace_key, NReplace,NT1,NT2),!,
@@ -401,6 +416,11 @@ write('X: '),write(X),write(' Y: '),write(Y),
         ;
         (error->write('done'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
 ).
+
+shearchnear(Peca,Tab,N,X,Y,Acc):-
+(getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->(floodfill3(X,Y,Peca,'r',Tab,FG)->true;true),write('lodo'),printboard(FG);X2 is X+1,!,shearchnear(Peca,Tab,N,X2,Y,Acc));
+(error->write('done'),N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,shearchnear(Peca,Tab,N,X2,Y2,Acc))).
+
 
 countPec(Peca,Tab,N):-countPecaux(Peca,Tab,N,0,0,0).
 countPecaux(Peca,Tab,N,X,Y,Acc):-
