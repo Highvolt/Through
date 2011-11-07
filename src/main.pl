@@ -386,7 +386,7 @@ caravanpoints:-p1c(X),caravan(X).
 getpalmeirasfor(J,Tab):-(J==1->p1c(Lista);p2c(Lista)),!,getpalmeirasfor(J,Lista,Tab).
 getPoint(J,N):-(J==1->write('Jogador 1:\n'),
 	countPec(a,N,Times),(shearchnear(a,N,T,0,0,0)->true;true),getpalmeirasfor(1,T),getP(1,K),sumList(K,Res),write('Pontuacao: '),!,write(Res);
-	write('Jogador 2:\n'),countPec(z,N,Times),(shearchnear(z,N,T,0,0,0)->true;true),getpalmeirasfor(2,T),getP(2,K),sumList(K,Res),write(Res)).
+	write('Jogador 2:\n'),countPec(z,N,Times),(shearchnear(z,N,T,0,0,0)->true;true),getpalmeirasfor(2,T),getP(2,K),sumList(K,Res),write('Pontuacao: '),!,write(Res)).
 	
 gamestart:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),initBoard(A), assert(getTab(A)),initplayer(1),initplayer(2),!,run.
 %main rotine
@@ -493,10 +493,10 @@ sumList([],Res,Acc):-Res=Acc.
 % test enclosed - enclosed(B),findalle(0,0,B,N),printboard(N),countPec(a,N,Times),(shearchnear(a,N,T,0,0,0)->true;true),getP(1,K),sumList(K,Res).
 shearchnear(Peca,Tab,N,X,Y,Acc):-
 (getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->(floodfill3(X,Y,Peca,'r',Tab,FG)->true;true),write('lodo'),printboard(FG),N=FG;X2 is X+1,!,shearchnear(Peca,Tab,N,X2,Y,Acc));
-(error->write('done'),N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,shearchnear(Peca,Tab,N,X2,Y2,Acc))).
+(error->N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,shearchnear(Peca,Tab,N,X2,Y2,Acc))).
 
 
 countPec(Peca,Tab,N):-countPecaux(Peca,Tab,N,0,0,0).
 countPecaux(Peca,Tab,N,X,Y,Acc):-
 (getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->Acc1 is Acc+1,X2 is X+1,!,countPecaux(Peca,Tab,N,X2,Y,Acc1);X2 is X+1,!,countPecaux(Peca,Tab,N,X2,Y,Acc));
-(error->write('done'),N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,countPecaux(Peca,Tab,N,X2,Y2,Acc))).
+(error->N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,countPecaux(Peca,Tab,N,X2,Y2,Acc))).
