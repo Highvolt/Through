@@ -310,8 +310,14 @@ fase2:-
 getTab(Tabuleiro),!,
 printboard(Tabuleiro),!,
 fase2(1),!,
-getTab(NovoTab),!,
-printboard(NovoTab),!,
+getTab(NovoTab1),!,
+printboard(NovoTab1),!,
+fase2(1),!,
+getTab(NovoTab2),!,
+printboard(NovoTab2),!,
+fase2(2),!,
+getTab(NovoTab3),!,
+printboard(NovoTab3),!,
 fase2(2).
 
 
