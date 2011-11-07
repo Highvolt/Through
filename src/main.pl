@@ -38,9 +38,41 @@ addPoints([],[],T,T).
 initBoard(B):-initialBoard(TB),getpoints(L),getPDef(PL),addPoints(L,PL,TB,B),!,true.
 initBoard(_).
 
-estadofim([[0, w, w, w, w, w, w, w, w, w, w, w], [1, w, w, e, e, e, w, w, e, e, w, w], [2, w, w, e, e, e, e, e, 1, e, e, w], [3, w, e, e, 20, e, e, e, e, e, e, w], [4, w, w, e, e, e, 20, e, e, e, e, w], [5, w, e, e, e, 10, e, e, 30, e, e, w], [6, w, e, e, e, e, 10, e, e, e, e, w], [7, w, e, 30, e, e, e, e, e, e, e, w], [8, w, e, e, e, e, e, e, 5, e, e, w], [9, w, e, 9, e, e, e, e, e, e, e, w], [10, w, 9, e, 9, e, 2, e, e, e, e, w], [11, w, 9, 9, 9, e, e, e, e, e, e, w], [12, w, e, e, 9, e, e, e, e, 30, e, w], [13, w, e, 9, w, e, e, e, e, 10, e, w], [14, w, e, 9, 20, w, e, 10, e, e, e, w], [15, w, 9, 9, w, w, w, e, e, e, 6, w], [16, w, e, 4, e, w, w, e, e, e, e, w], [17, w, e, e, e, 20, e, e, e, e, w, w], [18, w, e, e, e, e, e, e, 3, e, e, w], [19, w, e, e, e, e, e, e, e, e, w, w], [20, w, w, 10, 20, e, e, e, e, e, w, w], [21, w, e, e, 30, e, e, 10, e, w, w, w], [22, w, w, e, 8, 8, e, e, e, w, w, w], [23, w, w, 7, 8, 8, 0, e, w, w, w, w], [24, w, w, w, 8, 8, 8, 8, w, w, w, w], [25, w, w, w, 8, 8, 8, w, w, w, w, w], [26, w, w, w, w, e, e, w, w, w, w, w], [27, w, w, w, w, w, w, w, w, w, w, w]]).
+estadofim(
+[[0, w, w, w, w, w, w, w, w, w, w, w],
+ [1, w, w, w, w, w, w, w, w, w, w, w],
+ [2, w, w, e, e, e, w, w, e, e, w, w],
+ [3, w, w, e, e, e, e, e, 1, e, e, w],
+ [4, w, e, e, 20, e, e, e, e, e, e, w],
+ [5, w, w, e, e, e, 20, e, e, e, e, w],
+ [6, w, e, e, e, 10, e, e, 30, e, e, w],
+ [7, w, e, e, e, e, 10, e, e, e, e, w],
+ [8, w, e, 30, e, e, e, e, e, e, e, w],
+ [9, w, e, e, e, e, e, e, 5, e, e, w],
+ [10, w, e, 9, e, e, e, e, e, e, e, w],
+ [11, w, 9, e, 9, e, 2, e, e, e, e, w],
+ [12, w, 9, 9, 9, e, e, e, e, e, e, w],
+ [13, w, e, e, 9, e, e, e, e, 30, e, w],
+ [14, w, e, 9, w, e, e, e, e, 10, e, w],
+ [15, w, e, 9, 20, w, e, 10, e, e, e, w],
+ [16, w, 9, 9, w, w, w, e, e, e, 6, w],
+ [17, w, e, 4, e, w, w, e, e, e, e, w],
+ [18, w, e, e, e, 20, e, e, e, e, w, w],
+ [19, w, e, e, e, e, e, e, 3, e, e, w],
+ [20, w, e, e, e, e, e, e, e, e, w, w],
+ [21, w, w, 10, 20, e, e, e, e, e, w, w],
+ [22, w, e, e, 30, e, e, 10, e, w, w, w],
+ [23, w, w, e, 8, 8, e, e, e, w, w, w],
+ [24, w, w, 7, 8, 8, 0, e, w, w, w, w],
+ [25, w, w, w, 8, 8, 8, 8, w, w, w, w],
+ [26, w, w, w, 8, 8, 8, w, w, w, w, w],
+ [27, w, w, w, w, e, e, w, w, w, w, w],
+ [28, w, w, w, w, w, w, w, w, w, w, w],
+ [29, w, w, w, w, w, w, w, w, w, w, w]]).
 
-fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w],
+fase2tab([
+[0, w, w, w, w, w, w, w, w, w, w, w],
+[0, w, w, w, w, w, w, w, w, w, w, w],
  [1, w, w, e, 1, e, w, w, e, e, w, w],
  [2, w, w, e, e, e, e, 5, e, e, e, w],
  [3, w, e, e, e, 3, e, e, e, e, e, w],
@@ -67,39 +99,43 @@ fase2tab([[0, w, w, w, w, w, w, w, w, w, w, w],
  [24, w, w, w, e, e, e, e, w, w, w, w],
  [25, w, w, w, e, e, e, w, w, w, w, w],
  [26, w, w, w, w, e, e, w, w, w, w, w],
- [27, w, w, w, w, w, w, w, w, w, w, w]]).
+ [27, w, w, w, w, w, w, w, w, w, w, w],
+ [29, w, w, w, w, w, w, w, w, w, w, w]]).
+ 
 p1c([1,3,5,7,9]).
 p2c([0,2,4,6,8]).
 
 initialBoard(
 [[0,w,w,w,w,w,w,w,w,w,w,w],
-[1,w,w,e,e,e,w,w,e,e,w,w],
-[2,w,w,e,50,e,e,e,e,e,e,w],
-[3,w,e,e,e,e,e,e,e,e,e,w],
-[4,w,w,e,e,e,e,e,e,e,e,w],
-[5,w,e,e,e,e,e,e,e,e,e,w],
+[1,w,w,w,w,w,w,w,w,w,w,w],
+[2,w,w,e,e,e,w,w,e,e,w,w],
+[3,w,w,e,50,e,e,e,e,e,e,w],
+[4,w,e,e,e,e,e,e,e,e,e,w],
+[5,w,w,e,e,e,e,e,e,e,e,w],
 [6,w,e,e,e,e,e,e,e,e,e,w],
-[7,w,e,e,e,e,e,e,e,50,e,w],
-[8,w,e,e,e,e,e,e,e,e,e,w],
+[7,w,e,e,e,e,e,e,e,e,e,w],
+[8,w,e,e,e,e,e,e,e,50,e,w],
 [9,w,e,e,e,e,e,e,e,e,e,w],
 [10,w,e,e,e,e,e,e,e,e,e,w],
-[11,w,e,50,e,e,e,e,e,e,e,w],
-[12,w,e,e,e,e,e,e,e,e,e,w],
-[13,w,e,e,w,e,e,e,e,e,e,w],
-[14,w,e,e,e,w,e,e,e,e,e,w],
-[15,w,e,e,w,w,w,e,e,e,e,w],
-[16,w,e,e,e,w,w,e,50,e,e,w],
-[17,w,e,e,e,e,e,e,e,e,w,w],
-[18,w,e,e,e,e,e,e,e,e,e,w],
-[19,w,e,e,e,e,e,e,e,e,w,w],
-[20,w,w,e,e,e,e,e,e,e,w,w],
-[21,w,e,e,e,50,e,e,e,w,w,w],
-[22,w,w,e,e,e,e,e,e,w,w,w],
-[23,w,w,e,e,e,e,e,w,w,w,w],
-[24,w,w,w,e,e,e,e,w,w,w,w],
-[25,w,w,w,e,e,e,w,w,w,w,w],
-[26,w,w,w,w,e,e,w,w,w,w,w],
-[27,w,w,w,w,w,w,w,w,w,w,w]]
+[11,w,e,e,e,e,e,e,e,e,e,w],
+[12,w,e,50,e,e,e,e,e,e,e,w],
+[13,w,e,e,e,e,e,e,e,e,e,w],
+[14,w,e,e,w,e,e,e,e,e,e,w],
+[15,w,e,e,e,w,e,e,e,e,e,w],
+[16,w,e,e,w,w,w,e,e,e,e,w],
+[17,w,e,e,e,w,w,e,50,e,e,w],
+[18,w,e,e,e,e,e,e,e,e,w,w],
+[19,w,e,e,e,e,e,e,e,e,e,w],
+[20,w,e,e,e,e,e,e,e,e,w,w],
+[21,w,w,e,e,e,e,e,e,e,w,w],
+[22,w,e,e,e,50,e,e,e,w,w,w],
+[23,w,w,e,e,e,e,e,e,w,w,w],
+[24,w,w,e,e,e,e,e,w,w,w,w],
+[25,w,w,w,e,e,e,e,w,w,w,w],
+[26,w,w,w,e,e,e,w,w,w,w,w],
+[27,w,w,w,w,e,e,w,w,w,w,w],
+[28,w,w,w,w,w,w,w,w,w,w,w],
+[29,w,w,w,w,w,w,w,w,w,w,w]]
 ).
 
 enclosed(
@@ -330,10 +366,22 @@ test(X):-assert(t(1)),test2,t(X).
 fimcheat:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),estadofim(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),retractall(getC(_,_)),assert(getC(1,[])),assert(getC(2,[])),!,run.
 fase2cheat:-retractall(done),retractall(getTab(_)),retractall(getL(_,_)),retractall(getC(_,_)),retractall(getP(_,_)),fase2tab(A), assert(getTab(A)),initplayer(1),initplayer(2),retractall(getL(_,_)),assert(getL(1,[])),assert(getL(2,[])),!,run.
 
-show_lastpontuation:-getTab(B),findalle(0,0,B,N),printboard(N),nl,getPoint(1,B),nl,getPoint(2,B),assert(done).
+show_lastpontuation:-getTab(B),caravanpoints,findalle(0,0,B,N),printboard(N),nl,getPoint(1,B),nl,getPoint(2,B),assert(done).
 getpalmeirasfor(_,[],_).
 getpalmeirasfor(J,[H|T],Tab):-shearchnear(H,Tab,_,0,0,0),getpalmeirasfor(J,T,Tab).
 
+countelemlist(L,N,Elem):-countelemlist(L,N,Elem,0).
+
+countelemlist([],A,_,B):-A=B.
+countelemlist([H|T],N,Elem,Acc):-(H==Elem->Acc1 is Acc+1,countelemlist(T,N,Elem,Acc1);countelemlist(T,N,Elem,Acc)).
+caravan([]):-true.
+caravan([H|T]):-getC(1,C1),getC(2,C2),countelemlist(C1,N1,H),mesmacor(H,H1),countelemlist(C2,N2,H1),
+(N1>N2->getP(1,P1),retractall(getP(1,_)),append(P1,[10],NP1),assert(getP(1,NP1));
+(N2>N1->getP(2,P2),retractall(getP(2,_)),append(P2,[10],NP2),assert(getP(2,NP2));
+(N2==N1->getP(1,P1),retractall(getP(1,_)),append(P1,[5],NP1),assert(getP(1,NP1)),getP(2,P2),retractall(getP(2,_)),append(P2,[5],NP2),assert(getP(2,NP2))
+;false))),caravan(T).
+
+caravanpoints:-p1c(X),caravan(X).
 
 getpalmeirasfor(J,Tab):-(J==1->p1c(Lista);p2c(Lista)),!,getpalmeirasfor(J,Lista,Tab).
 getPoint(J,N):-(J==1->write('Jogador 1:\n'),
