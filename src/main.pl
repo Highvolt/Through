@@ -453,7 +453,7 @@ allintegersequal([H|T],C,Ret):-
 allintegersequal([],T,Ret):-(integer(T)->Ret=T;false).
 
 getneighboorint(X,Y,V,B):-
-write('X: '),write(X),write(' Y: '),write(Y),nl,
+%write('X: '),write(X),write(' Y: '),write(Y),nl,
 (vizinho(1,X,Y,B,Valor)->true;true,Valor=e),!,
 (vizinho(2,X,Y,B,Valor1)->true;true,Valor1=e),!,
 (vizinho(3,X,Y,B,Valor2)->true;true,Valor2=e),!,
@@ -462,8 +462,11 @@ write('X: '),write(X),write(' Y: '),write(Y),nl,
 (vizinho(6,X,Y,B,Valor5)->true;true,Valor5=e),!,
 (vizinho(7,X,Y,B,Valor6)->true;true,Valor6=e),!,
 (vizinho(8,X,Y,B,Valor7)->true;true,Valor7=e),!,
-LV=[Valor,Valor1,Valor2,Valor3,Valor4,Valor5,Valor6,Valor7],printlist(LV),nl,!,
-(allintegersequal(LV,e,Ret)->write('valid'),write('V: '),write(V),nl,V=Ret,true;false).
+LV=[Valor,Valor1,Valor2,Valor3,Valor4,Valor5,Valor6,Valor7],!,
+%printlist(LV),nl,!,
+(allintegersequal(LV,e,Ret)->!,
+%write('valid'),write('V: '),write(V),nl,
+V=Ret,true;false).
 
 
 findalle(Tab,FT):-findalle(0,0,Tab,FT).
@@ -471,7 +474,7 @@ findalle(Tab,FT):-findalle(0,0,Tab,FT).
 findalle(X,Y,Tab,FT):-
 %write('X: '),write(X),write(' Y: '),write(Y),
 (getpos(X,Y,V,Tab)->!,retractall(error),!,
-        write('V: '),write(V),nl,!,
+        %write('V: '),write(V),nl,!,
         (V==e->
                 (getneighboorint(X,Y,CAR,Tab)->
                         !,(even(CAR)->J=z;J=a),(floodfill2(X,Y,e,CAR,J,Tab,Lodo)->NT=Lodo;floodfill(X,Y,e,' ',Tab,NT)),notrace
@@ -482,7 +485,7 @@ findalle(X,Y,Tab,FT):-
 
                 true,!,X1 is X+1,!,findalle(X1,Y,Tab,FT))
         ;
-        (error->write('done'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
+        (error->write('done\n'),FT=Tab,true;assert(error),X2=0,Y2 is Y+1,!,findalle(X2,Y2,Tab,FT))
 ).
 
 sumList(L,R):-sumList(L,R,0).
@@ -492,7 +495,7 @@ sumList([],Res,Acc):-Res=Acc.
 
 % test enclosed - enclosed(B),findalle(0,0,B,N),printboard(N),countPec(a,N,Times),(shearchnear(a,N,T,0,0,0)->true;true),getP(1,K),sumList(K,Res).
 shearchnear(Peca,Tab,N,X,Y,Acc):-
-(getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->(floodfill3(X,Y,Peca,'r',Tab,FG)->true;true),write('lodo'),printboard(FG),N=FG;X2 is X+1,!,shearchnear(Peca,Tab,N,X2,Y,Acc));
+(getpos(X,Y,V,Tab)->!,retractall(error),!,(V==Peca->(floodfill3(X,Y,Peca,'r',Tab,FG)->true;true),printboard(FG),N=FG;X2 is X+1,!,shearchnear(Peca,Tab,N,X2,Y,Acc));
 (error->N=Acc,true;assert(error),X2=0,Y2 is Y+1,!,shearchnear(Peca,Tab,N,X2,Y2,Acc))).
 
 
